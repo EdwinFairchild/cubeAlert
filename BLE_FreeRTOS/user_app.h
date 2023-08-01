@@ -15,6 +15,8 @@
 #include <stdint.h>
 #include <string.h>
 #include "stdlib.h"
+#include "uart.h"
+#include "spi.h"
 
 void registerUserAppTasks(void);
 int initSpi(void);

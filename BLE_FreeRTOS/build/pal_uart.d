@@ -1,42 +1,42 @@
-/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/pal_uart.o: \
+/home/eddie/playground/cubeAlert/BLE_FreeRTOS/build/pal_uart.o: \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/targets/maxim/max32655/sources/pal_uart.c \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/include/pal_uart.h \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/include/pal_types.h \
- /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/_default_types.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/features.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/_newlib_version.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_intsup.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_stdint.h \
- /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
+ /home/eddie/workspace/arm-tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/stdint.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/_default_types.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/features.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/_newlib_version.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_intsup.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_stdint.h \
+ /home/eddie/workspace/arm-tools/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/include/pal_led.h \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/include/pal_sys.h \
  /home/eddie/workspace/msdk/Libraries/Boards/MAX32655/FTHR_Apps_P1/Include/board.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/stdio.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/newlib.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/config.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/ieeefp.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/cdefs.h \
- /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/reent.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_types.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/_types.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/lock.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/types.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/endian.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/_endian.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/select.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_sigset.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_timeval.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/timespec.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_timespec.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_pthreadtypes.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/sched.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/types.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/stdio.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/stdio.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/_ansi.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/newlib.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/config.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/ieeefp.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/cdefs.h \
+ /home/eddie/workspace/arm-tools/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/reent.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/_ansi.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_types.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/_types.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/lock.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/types.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/endian.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/_endian.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/select.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_sigset.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_timeval.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/timespec.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_timespec.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_pthreadtypes.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/sched.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/machine/types.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/stdio.h \
  /home/eddie/workspace/msdk/Libraries/MiscDrivers/LED/led.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_assert.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/gpio.h \
@@ -65,7 +65,7 @@
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_errors.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_sys.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Source/SEMA/sema_reva_regs.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_locale.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/strings.h \
- /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/string.h
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/string.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/_locale.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/strings.h \
+ /home/eddie/workspace/arm-tools/arm-none-eabi/include/sys/string.h
