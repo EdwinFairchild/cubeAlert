@@ -130,6 +130,7 @@ int main(void)
     bleStartup();
 
 
+    initUART();
     registerUserAppTasks();
     /* Start scheduler */
     vTaskStartScheduler();

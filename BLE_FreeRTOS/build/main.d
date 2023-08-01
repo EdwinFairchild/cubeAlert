@@ -81,4 +81,11 @@
  user_app.h \
  /home/eddie/workspace/msdk/Libraries/FreeRTOS//Source/include/queue.h \
  /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_trace.h \
- /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h \
+ /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_delay.h \
+ /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/uart.h \
+ /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/uart_regs.h \
+ /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/nvic_table.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/stdlib.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/stdlib.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/alloca.h

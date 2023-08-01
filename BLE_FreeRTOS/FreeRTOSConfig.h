@@ -56,7 +56,7 @@
 #define DEEPSLEEP_LED 0
 
 /* Tick-less idle forces a 32768 Hz RTC-derived SysTick source, and a 256 Hz task tick */
-// #define configUSE_TICKLESS_IDLE     1
+ // #define configUSE_TICKLESS_IDLE     1
 
 /* Faster tick rate will result in more CPU interrupts while not in standby mode, but will
 increase the amount of time spent in standby mode, thus reducing average power consumption. */

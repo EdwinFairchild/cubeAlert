@@ -17,7 +17,7 @@
 #include "stdlib.h"
 
 void registerUserAppTasks(void);
-void initSpi(void);
-void initUART(void);
+int initSpi(void);
+int initUART(void);
 
 #endif

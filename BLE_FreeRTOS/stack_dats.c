@@ -268,7 +268,7 @@ void setInterruptPriority(void)
     NVIC_SetPriority(UART0_IRQn, (configMAX_PRIORITIES - 0));
     NVIC_SetPriority(UART1_IRQn, (configMAX_PRIORITIES - 0));
     NVIC_SetPriority(UART2_IRQn, (configMAX_PRIORITIES - 0));
-    NVIC_SetPriority(UART3_IRQn, (configMAX_PRIORITIES - 0));
+    NVIC_SetPriority(UART3_IRQn, (configMAX_PRIORITIES - 1));
 
     NVIC_SetPriority(DMA0_IRQn, (configMAX_PRIORITIES - 0));
     NVIC_SetPriority(DMA1_IRQn, (configMAX_PRIORITIES - 0));
