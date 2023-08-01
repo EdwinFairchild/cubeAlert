@@ -1,0 +1,17 @@
+/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/wsf_queue.o: \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/sources/targets/freertos/wsf_queue.c \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h \
+ /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/_default_types.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/features.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/_newlib_version.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_intsup.h \
+ /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_stdint.h \
+ /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_queue.h \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_assert.h \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_trace.h \
+ /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h \
+ /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_cs.h
