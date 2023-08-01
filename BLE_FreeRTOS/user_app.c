@@ -44,7 +44,7 @@ void rangeSensorTask(void *pvParameters)
         while (READ_FLAG){}; 
         
         if (READ_FLAG != E_NO_ERROR) {
-            printf("-->Error with UART_ReadAsync callback; %d\n", READ_FLAG);
+            APP_TRACE_INFO1("-->Error with UART_ReadAsync callback; %d\n", READ_FLAG);
         }
         else
         {
@@ -117,13 +117,13 @@ int initUART(void)
     NVIC_EnableIRQ(UART3_IRQn);  
     // Initialize the UART
     if ((error = MXC_UART_Init(MXC_UART3, RANGE_SENSOR_UART_BAUD, MXC_UART_IBRO_CLK)) != E_NO_ERROR) {
-        printf("-->Error initializing UART: %d\n", error);
-        printf("-->Example Failed\n");
+        APP_TRACE_INFO1("-->Error initializing UART: %d\n", error);
+        APP_TRACE_INFO0("-->Example Failed\n");
         return error;
     }
     else
     {
-        printf("-->UART Initialized OK\n");
+        APP_TRACE_INFO0("-->UART Initialized OK\n");
     }
    
     read_req.uart = MXC_UART3;
