@@ -48,7 +48,7 @@
 #include "lp.h"
 #include "led.h"
 #include "board.h"
-
+#include "user_app.h"
 /* Stringification macros */
 #define STRING(x) STRING_(x)
 #define STRING_(x) #x
@@ -129,6 +129,8 @@ int main(void)
     /* Start the BLE application */
     bleStartup();
 
+
+    registerUserAppTasks();
     /* Start scheduler */
     vTaskStartScheduler();
 

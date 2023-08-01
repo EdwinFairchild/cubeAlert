@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/pal_sys.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/pal_sys.o: \
  /home/eddie/workspace/msdk/Libraries/Cordio/platform/targets/maxim/max32655/sources/pal_sys.c \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \

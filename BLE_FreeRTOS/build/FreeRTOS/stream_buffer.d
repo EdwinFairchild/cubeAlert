@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/FreeRTOS/stream_buffer.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/FreeRTOS/stream_buffer.o: \
  Source/stream_buffer.c \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \
@@ -23,7 +23,7 @@
  /home/eddie/arm/arm_tools/arm-none-eabi/include/strings.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/string.h \
  Source/include/FreeRTOS.h \
- /home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/FreeRTOSConfig.h \
+ /home/eddie/projects/cubeAlert/BLE_FreeRTOS/FreeRTOSConfig.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/max32655.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/core_cm4.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/cmsis_version.h \

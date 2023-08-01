@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/system_max32655.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/system_max32655.o: \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Source/system_max32655.c \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \

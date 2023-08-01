@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/FreeRTOS/croutine.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/FreeRTOS/croutine.o: \
  Source/croutine.c Source/include/FreeRTOS.h \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
@@ -8,7 +8,7 @@
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_newlib_version.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_intsup.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_stdint.h \
- /home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/FreeRTOSConfig.h \
+ /home/eddie/projects/cubeAlert/BLE_FreeRTOS/FreeRTOSConfig.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/max32655.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/core_cm4.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/cmsis_version.h \

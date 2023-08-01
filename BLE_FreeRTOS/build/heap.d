@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/heap.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/heap.o: \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Source/heap.c \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \

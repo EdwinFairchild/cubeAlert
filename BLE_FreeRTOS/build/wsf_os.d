@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/wsf_os.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/wsf_os.o: \
  /home/eddie/workspace/msdk/Libraries/Cordio/wsf/sources/targets/freertos/wsf_os.c \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \

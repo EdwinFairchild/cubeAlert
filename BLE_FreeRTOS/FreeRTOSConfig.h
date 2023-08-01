@@ -73,7 +73,7 @@ increase the amount of time spent in standby mode, thus reducing average power c
 #define configMINIMAL_STACK_SIZE ((uint16_t)128)
 
 #define configUSE_PREEMPTION 1
-#define configUSE_IDLE_HOOK 1
+#define configUSE_IDLE_HOOK 0
 #define configUSE_TICK_HOOK 0
 #define configUSE_CO_ROUTINES 0
 #define configUSE_16_BIT_TICKS 0

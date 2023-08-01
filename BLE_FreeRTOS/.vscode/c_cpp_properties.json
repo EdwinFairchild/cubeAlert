@@ -19,7 +19,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${default}"
+                "${default}",
+                "/home/eddie/workspace/msdk/Libraries/**"
             ],
             "defines": [
                 "${default}"

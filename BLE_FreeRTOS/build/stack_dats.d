@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/stack_dats.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/stack_dats.o: \
  stack_dats.c /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/newlib.h \

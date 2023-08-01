@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/FreeRTOS/queue.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/FreeRTOS/queue.o: \
  Source/queue.c /home/eddie/arm/arm_tools/arm-none-eabi/include/stdlib.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/machine/ieeefp.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \
@@ -25,7 +25,7 @@
  /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_intsup.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/_stdint.h \
- /home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/FreeRTOSConfig.h \
+ /home/eddie/projects/cubeAlert/BLE_FreeRTOS/FreeRTOSConfig.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/max32655.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/core_cm4.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/5.9.0/Core/Include/cmsis_version.h \

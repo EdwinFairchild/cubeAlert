@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/stdio.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/stdio.o: \
  /home/eddie/workspace/msdk/Libraries/MiscDrivers/stdio.c \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/errno.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/sys/reent.h \
@@ -61,12 +61,11 @@
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_device.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/gcr_regs.h \
  /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/lpgcr_regs.h \
- /home/eddie/workspace/msdk/Libraries/Boards/MAX32655/EvKit_V1/Include/board.h \
- /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/spi.h \
- /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdbool.h \
- /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/spi_regs.h \
- /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_sys.h \
+ /home/eddie/workspace/msdk/Libraries/Boards/MAX32655/FTHR_Apps_P1/Include/board.h \
+ /home/eddie/workspace/msdk/Libraries/MiscDrivers/LED/led.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_assert.h \
- /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_lock.h \
+ /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/gpio.h \
+ /home/eddie/workspace/msdk/Libraries/MiscDrivers/PushButton/pb.h \
  /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/uart.h \
- /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/uart_regs.h
+ /home/eddie/workspace/msdk/Libraries/CMSIS/Device/Maxim/MAX32655/Include/uart_regs.h \
+ /home/eddie/workspace/msdk/Libraries/PeriphDrivers/Include/MAX32655/mxc_sys.h

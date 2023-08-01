@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/w25.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/w25.o: \
  /home/eddie/workspace/msdk/Libraries/MiscDrivers/ExtMemory/w25.c \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/stdint.h \

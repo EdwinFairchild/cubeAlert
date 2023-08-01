@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/FreeRTOS_CLI.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/FreeRTOS_CLI.o: \
  /home/eddie/workspace/msdk/Libraries/FreeRTOS-Plus/Source/FreeRTOS-Plus-CLI/FreeRTOS_CLI.c \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/string.h \
  /home/eddie/arm/arm_tools/arm-none-eabi/include/_ansi.h \

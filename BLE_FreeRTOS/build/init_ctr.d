@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/init_ctr.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/init_ctr.o: \
  /home/eddie/workspace/msdk/Libraries/Cordio/controller/sources/ble/init/init_ctr.c \
  /home/eddie/workspace/msdk/Libraries/Cordio/controller/include/ble/ll_init_api.h \
  /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h \

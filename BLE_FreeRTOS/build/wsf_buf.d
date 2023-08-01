@@ -1,4 +1,4 @@
-/home/eddie/workspace/msdk/Examples/MAX32655/BLE_FreeRTOS/build/wsf_buf.o: \
+/home/eddie/projects/cubeAlert/BLE_FreeRTOS/build/wsf_buf.o: \
  /home/eddie/workspace/msdk/Libraries/Cordio/wsf/sources/targets/freertos/wsf_buf.c \
  /home/eddie/workspace/msdk/Libraries/Cordio/wsf/include/wsf_types.h \
  /home/eddie/arm/arm_tools/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h \

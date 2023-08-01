@@ -6,7 +6,7 @@
 # https://analog-devices-msdk.github.io/msdk/USERGUIDE/#build-system
 
 # **********************************************************
-
+MAXIM_PATH=/home/eddie/workspace/msdk
 # Enable FreeRTOS library
 LIB_FREERTOS = 1
 
