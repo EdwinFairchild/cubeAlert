@@ -21,5 +21,7 @@
 void registerUserAppTasks(void);
 int initSpi(void);
 int initUART(void);
-
+void spiSendLedStripFrame(void);
+void SPI_Callback(mxc_spi_req_t *req, int error);
+void SPI_IRQHandler(void);
 #endif

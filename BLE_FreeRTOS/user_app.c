@@ -28,12 +28,22 @@ volatile int SPI_FLAG;
 
 /************| LED STUFF |***************/
 #define BRIGHTNESS_PREAMBLE (0x07)
-#define END_OF_FRAME_PREAMBLE ((uint8_t)0x00)
-#define END_OF_FRAME_BYTES 9 // ((NUM_OF_LEDS  - 1) / 16 ) rounded up == 9 
-#define START_OF_FRAME ((uint32_t)0x00000000)
-#define END_OF_FRAME ((uint32_t)0xFFFFFFFF)
-#define NUM_OF_LEDS 144
-#define SET_FRAME(a,b,g,r) ( (uint32_t)  ( (BRIGHTNESS_PREAMBLE) << 29 | \
+#define START_OF_FRAME_BYTES 4
+#define START_OF_FRAME ((uint32_t)0xEEEEEEEE)
+#define END_OF_FRAME ((uint32_t)0xAAAAAAAA)
+#define NUM_OF_LEDS 5
+#define END_OF_FRAME_WORDS (3) // ((NUM_OF_LEDS  - 1) / 16 ) rounded up == 9 
+// 1 is start of frame word
+// 3 is number of end of frame words == 9 bytes == 3 words
+#define COMPLETE_LED_FRAME_SIZE_U32 (NUM_OF_LEDS + 1 + 3)
+/* 
+Uint32_t containing the 4 bytes of the LED frame
+    brightness with 3 msp bits 111 and 5 lsb bits birghtness level
+    blue
+    green
+    red
+*/
+#define LED_FRAME(a,b,g,r) ( (uint32_t)  ( (BRIGHTNESS_PREAMBLE) << 29 | \
                                                     ((uint8_t)a) << 24 | \
                                                     ((uint8_t)b) << 16 | \
                                                     ((uint8_t)g) << 8 | \
@@ -94,6 +104,7 @@ void ledStripTask(void *pvParameters)
     while(1)
     {
         vTaskDelay(1000);
+        spiSendLedStripFrame();
         APP_TRACE_INFO0("LED Strip Task");
     }
 }
@@ -157,6 +168,9 @@ int initUART(void)
 int initSpi(void)
 {
     int retVal = 0;
+    MXC_NVIC_SetVector(SPI_IRQ, SPI_IRQHandler);
+    NVIC_EnableIRQ(SPI_IRQ);
+
     spi_pins.clock = TRUE;
     spi_pins.miso  = TRUE;
     spi_pins.mosi  = TRUE;
@@ -203,11 +217,30 @@ int initSpi(void)
 /***************************************************************/
 void spiSendLedStripFrame(void)
 {
-    MXC_NVIC_SetVector(SPI_IRQ, SPI_IRQHandler);
-        NVIC_EnableIRQ(SPI_IRQ);
+    
+    APP_TRACE_INFO0("Sending LED Strip Frame");
+    uint32_t ledStripFrame[COMPLETE_LED_FRAME_SIZE_U32];
+    memset(ledStripFrame, 0x0, NUM_OF_LEDS);
+    ledStripFrame[0] = START_OF_FRAME;
+    for (int i = 1; i <= NUM_OF_LEDS; i++)
+    {
+        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x44);
+    }
+    //file end of frame num of words with 0x00000000
+    for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
+    {
+        ledStripFrame[NUM_OF_LEDS + i] = END_OF_FRAME;
+    }
 
+    // send LED strip data frame
+    req.txData = (uint8_t*)ledStripFrame;
+    req.txLen = COMPLETE_LED_FRAME_SIZE_U32  * 4  ;
+    req.rxLen = 0;
 
     MXC_SPI_MasterTransactionAsync(&req);
 
     while (SPI_FLAG == 1) {}
+    APP_TRACE_INFO0("LED Strip Frame Sent");
+    SPI_FLAG = 1;
+
 }

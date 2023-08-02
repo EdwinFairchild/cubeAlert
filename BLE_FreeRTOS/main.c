@@ -129,7 +129,7 @@ int main(void)
     /* Start the BLE application */
     bleStartup();
 
-
+    initSpi();
     initUART();
     registerUserAppTasks();
     /* Start scheduler */
