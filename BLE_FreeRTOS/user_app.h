@@ -17,11 +17,12 @@
 #include "stdlib.h"
 #include "uart.h"
 #include "spi.h"
-
+#include "sk9822.h"
 void registerUserAppTasks(void);
 int initSpi(void);
 int initUART(void);
 void spiSendLedStripFrame(void);
 void SPI_Callback(mxc_spi_req_t *req, int error);
 void SPI_IRQHandler(void);
+fptr_U8_t spi_send(uint8_t data);
 #endif

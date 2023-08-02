@@ -1,5 +1,5 @@
 #include "user_app.h"
-
+#include "sk9822.h"
 /************| FreeRTOS STUFF |***************/
 TaskHandle_t rangeSensorTask_id;
 TaskHandle_t ledStripTask_id;
@@ -10,7 +10,7 @@ volatile int READ_FLAG;
 uint8_t RxData[1]; // we wil only be using 1 space but just to be safe make it bigger
  mxc_uart_req_t read_req;
 uint16_t measurement_mm = 0;
-
+volatile uint32_t delaytVar = 0;
 /************| SPI STUFF |***************/
 // FTHR board applicable settings
 #define SPI MXC_SPI1
@@ -22,16 +22,16 @@ uint16_t measurement_mm = 0;
 #define DATA_VALUE 0xA5A5 // This is for master mode only...
 #define VALUE 0xFFFF
 #define SPI_SPEED 100000 // Bit Rate
-mxc_spi_req_t req;
+volatile mxc_spi_req_t req;
 mxc_spi_pins_t spi_pins;
 volatile int SPI_FLAG;
 
 /************| LED STUFF |***************/
 #define BRIGHTNESS_PREAMBLE (0x07)
 #define START_OF_FRAME_BYTES 4
-#define START_OF_FRAME ((uint32_t)0xEEEEEEEE)
-#define END_OF_FRAME ((uint32_t)0xAAAAAAAA)
-#define NUM_OF_LEDS 5
+#define START_OF_FRAME ((uint32_t)0x00000000)
+#define END_OF_FRAME ((uint32_t)0x00000000)
+#define NUM_OF_LEDS 144
 #define END_OF_FRAME_WORDS (3) // ((NUM_OF_LEDS  - 1) / 16 ) rounded up == 9 
 // 1 is start of frame word
 // 3 is number of end of frame words == 9 bytes == 3 words
@@ -43,11 +43,12 @@ Uint32_t containing the 4 bytes of the LED frame
     green
     red
 */
-#define LED_FRAME(a,b,g,r) ( (uint32_t)  ( (BRIGHTNESS_PREAMBLE) << 29 | \
-                                                    ((uint8_t)a) << 24 | \
-                                                    ((uint8_t)b) << 16 | \
-                                                    ((uint8_t)g) << 8 | \
-                                                    ((uint8_t)r) ) )
+#define LED_FRAME(a,b,g,r) ( (uint32_t)  ( (BRIGHTNESS_PREAMBLE) << 5 | \
+                                                    ((uint8_t)a)      | \
+                                                    ((uint8_t)b) << 8 | \
+                                                    ((uint8_t)g) << 16 | \
+                                                    ((uint8_t)r) << 24)| \
+                                                    (BRIGHTNESS_PREAMBLE) << 29 )
 
 
 /***************************************************************/
@@ -101,10 +102,13 @@ void rangeSensorTask(void *pvParameters)
 /***************************************************************/
 void ledStripTask(void *pvParameters)
 {
+    sk9822_init(spi_send);
+    led_color_t color = {31, 255, 0, 0};
     while(1)
     {
         vTaskDelay(1000);
-        spiSendLedStripFrame();
+       // spiSendLedStripFrame();
+       sk9822_set_color_all(color);
         APP_TRACE_INFO0("LED Strip Task");
     }
 }
@@ -124,11 +128,13 @@ void UART3_Handler(void)
 void SPI_IRQHandler(void)
 {
     MXC_SPI_AsyncHandler(SPI);
+     SPI_FLAG = 0;
+
 }
 /***************************************************************/
 void SPI_Callback(mxc_spi_req_t *req, int error)
 {
-    SPI_FLAG = error;
+   SPI_FLAG = error;
 }
 /***************************************************************/
 void readCallback(mxc_uart_req_t *req, int error)
@@ -189,6 +195,7 @@ int initSpi(void)
     //SPI Request
     req.spi = SPI;
     req.txData = NULL;
+    req.rxData = NULL;
     req.txLen = 0;
     req.rxLen = 0;
     req.ssIdx = 1;
@@ -224,7 +231,7 @@ void spiSendLedStripFrame(void)
     ledStripFrame[0] = START_OF_FRAME;
     for (int i = 1; i <= NUM_OF_LEDS; i++)
     {
-        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x44);
+        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x07);
     }
     //file end of frame num of words with 0x00000000
     for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
@@ -232,15 +239,52 @@ void spiSendLedStripFrame(void)
         ledStripFrame[NUM_OF_LEDS + i] = END_OF_FRAME;
     }
 
-    // send LED strip data frame
-    req.txData = (uint8_t*)ledStripFrame;
-    req.txLen = COMPLETE_LED_FRAME_SIZE_U32  * 4  ;
-    req.rxLen = 0;
+    // send LED strip data frame as a huge stream
+    // req.txData = (uint8_t*)ledStripFrame;
+    // req.txLen = COMPLETE_LED_FRAME_SIZE_U32  * 4  ;
+    // req.rxLen = 0;
 
-    MXC_SPI_MasterTransactionAsync(&req);
+    // MXC_SPI_MasterTransactionAsync(&req);
 
-    while (SPI_FLAG == 1) {}
-    APP_TRACE_INFO0("LED Strip Frame Sent");
-    SPI_FLAG = 1;
+    // while (SPI_FLAG == 1) {}
+    // APP_TRACE_INFO0("LED Strip Frame Sent\r\n-------");
+    // SPI_FLAG = 1;
+
+    // send byte by byte
+    volatile uint8_t *data = (uint8_t*)ledStripFrame;
+    uint8_t test = 0x42;
+    int retVal = 0;
+    __asm volatile("cpsid i");
+    for (int i = 0; i < COMPLETE_LED_FRAME_SIZE_U32 * 4; i++)
+    {
+        req.txData = (uint8_t*)&data[i];
+        req.txLen = 1;
+        req.txCnt = 0;
+        req.rxLen = 0;
+        retVal = MXC_SPI_MasterTransaction(&req);
+        if(retVal != E_NO_ERROR)
+        {
+            APP_TRACE_INFO1(">>>>>>>>>>>>SPI ERROR: %d", retVal);
+        }
+        // while (SPI_FLAG == 1) {}
+        // SPI_FLAG = 1;
+        //print what was sent
+       // APP_TRACE_INFO2("Sent: [%d]:[%x]",i, data[i]);
+       //for(delaytVar = 0; delaytVar < 500; delaytVar++){};
+        
+    }
+    __asm volatile("cpsie i");
+    APP_TRACE_INFO0("LED Strip Frame Sent\r\n-------");
+
+}
+
+fptr_U8_t spi_send(uint8_t data)
+{
+    int retVal = 0;
+      req.txData = (uint8_t*)&data;
+        req.txLen = 1;
+        req.txCnt = 0;
+        req.rxLen = 0;
+        retVal = MXC_SPI_MasterTransaction(&req);
 
 }
