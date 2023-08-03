@@ -30,7 +30,7 @@ volatile int SPI_FLAG;
 #define BRIGHTNESS_PREAMBLE (0x07)
 #define START_OF_FRAME_BYTES 4
 #define START_OF_FRAME ((uint32_t)0x00000000)
-#define END_OF_FRAME ((uint32_t)0x00000000)
+#define END_OF_FRAME ((uint32_t)0x11111111)
 #define NUM_OF_LEDS 144
 #define END_OF_FRAME_WORDS (3) // ((NUM_OF_LEDS  - 1) / 16 ) rounded up == 9 
 // 1 is start of frame word
@@ -107,8 +107,8 @@ void ledStripTask(void *pvParameters)
     while(1)
     {
         vTaskDelay(1000);
-       // spiSendLedStripFrame();
-       sk9822_set_color_all(color);
+       spiSendLedStripFrame();
+       //sk9822_set_color_all(color);
         APP_TRACE_INFO0("LED Strip Task");
     }
 }
@@ -206,6 +206,7 @@ int initSpi(void)
     SPI_FLAG = 1;
 
     retVal = MXC_SPI_SetDataSize(SPI, 8);
+    MXC_SPI_SetMode(MXC_SPI1, SPI_MODE_3);
 
     if (retVal != E_NO_ERROR) {
         APP_TRACE_INFO1("> SPI SET DATASIZE ERROR: %d", retVal);
@@ -234,10 +235,10 @@ void spiSendLedStripFrame(void)
         ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x07);
     }
     //file end of frame num of words with 0x00000000
-    for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
-    {
-        ledStripFrame[NUM_OF_LEDS + i] = END_OF_FRAME;
-    }
+   // for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
+    //{
+        ledStripFrame[NUM_OF_LEDS + 1] = END_OF_FRAME;
+    //}
 
     // send LED strip data frame as a huge stream
     // req.txData = (uint8_t*)ledStripFrame;
