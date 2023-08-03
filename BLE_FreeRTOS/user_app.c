@@ -36,6 +36,12 @@ volatile int SPI_FLAG;
 // 1 is start of frame word
 // 3 is number of end of frame words == 9 bytes == 3 words
 #define COMPLETE_LED_FRAME_SIZE_U32 (NUM_OF_LEDS + 1 + 3)
+#define LED_COUNT 144
+#define GLOBAL      0
+#define RED         3
+#define GREEN       2
+#define BLUE        1
+uint8_t LED_ARRAY[LED_COUNT][4] = {0};
 /* 
 Uint32_t containing the 4 bytes of the LED frame
     brightness with 3 msp bits 111 and 5 lsb bits birghtness level
@@ -102,12 +108,17 @@ void rangeSensorTask(void *pvParameters)
 /***************************************************************/
 void ledStripTask(void *pvParameters)
 {
-    sk9822_init(spi_send);
+    clearLedArray();
+    skSetLed(0,10,255,0,0);
+    skSetLed(1,10,0,0x42,0);
+    skSetLed(2,10,0,0,0x66);
+    skUpdateLed();
     led_color_t color = {31, 255, 0, 0};
     while(1)
     {
         vTaskDelay(1000);
-       spiSendLedStripFrame();
+        skUpdateLed();
+     //  spiSendLedStripFrame();
        //sk9822_set_color_all(color);
         APP_TRACE_INFO0("LED Strip Task");
     }
@@ -206,7 +217,7 @@ int initSpi(void)
     SPI_FLAG = 1;
 
     retVal = MXC_SPI_SetDataSize(SPI, 8);
-    MXC_SPI_SetMode(MXC_SPI1, SPI_MODE_3);
+   
 
     if (retVal != E_NO_ERROR) {
         APP_TRACE_INFO1("> SPI SET DATASIZE ERROR: %d", retVal);
@@ -232,7 +243,7 @@ void spiSendLedStripFrame(void)
     ledStripFrame[0] = START_OF_FRAME;
     for (int i = 1; i <= NUM_OF_LEDS; i++)
     {
-        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x07);
+        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x44);
     }
     //file end of frame num of words with 0x00000000
    // for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
@@ -279,13 +290,58 @@ void spiSendLedStripFrame(void)
 
 }
 
-fptr_U8_t spi_send(uint8_t data)
+void spiSend(uint8_t data)
 {
     int retVal = 0;
-      req.txData = (uint8_t*)&data;
-        req.txLen = 1;
-        req.txCnt = 0;
-        req.rxLen = 0;
-        retVal = MXC_SPI_MasterTransaction(&req);
+    req.txData = (uint8_t*)&data;
+    req.txLen = 1;
+    req.txCnt = 0;
+    req.rxLen = 0;
+    retVal = MXC_SPI_MasterTransaction(&req);
 
+}
+
+void clearLedArray(void)
+{
+  for (int i = 0; i < LED_COUNT; i++)
+  {
+    LED_ARRAY[i][GLOBAL] = 0xe0;
+    LED_ARRAY[i][RED] = 0;
+    LED_ARRAY[i][GREEN] = 0;
+    LED_ARRAY[i][BLUE] = 0;
+  }
+}
+
+void skSetLed(uint8_t ledNum, uint8_t global, uint8_t r, uint8_t g , uint8_t b)
+{
+  LED_ARRAY[ledNum][GLOBAL] = 0xE0 |global;
+  LED_ARRAY[ledNum][RED] = r;
+  LED_ARRAY[ledNum][GREEN] = g;
+  LED_ARRAY[ledNum][BLUE] = b;
+}
+
+void skUpdateLed(void)
+{
+    __asm volatile("cpsid i");
+  //send start of frame
+  for(int i = 0 ; i < 4;i++)
+  {
+    spiSend(0x00);
+  }
+  //send led frames
+  for(int i = 0 ; i < LED_COUNT;i++)
+  {
+    spiSend(LED_ARRAY[i][GLOBAL]);
+    spiSend(LED_ARRAY[i][BLUE]);
+    spiSend(LED_ARRAY[i][GREEN]);
+    spiSend(LED_ARRAY[i][RED]);
+  }
+
+  //send end of frame
+  for(int i = 0 ; i < 4;i++)
+  {
+    spiSend(0xFF);
+  }
+
+  __asm volatile("cpsie i");
 }

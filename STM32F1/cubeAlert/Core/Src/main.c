@@ -30,6 +30,8 @@
 #include "stdarg.h"
 #include "string.h"
 #include "stm32f1xx.h"
+//import lib needed to use srand and rand
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -130,6 +132,27 @@ void skUpdateLed(void)
     spiSend(0xFF);
   }
 }
+void fillLEDs(int value)
+{
+    // Map the value from the range 10-2200 to the range 0-143
+    int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
+
+    // Ensure that ledsToLight is within the range 0-143
+    if (ledsToLight < 0) ledsToLight = 0;
+    if (ledsToLight > LED_COUNT - 1) ledsToLight = LED_COUNT - 1;
+
+    // Clear all LEDs
+    clearLedArray();
+
+    // Light up the LEDs from 0 to ledsToLight
+    for (int i = 0; i <= ledsToLight; i++)
+    {
+        skSetLed(i, 1, 0, 255, 0);  // You can choose any color here
+    }
+
+    // Update the LEDs
+    skUpdateLed();
+}
 /* USER CODE END 0 */
 
 /**
@@ -164,35 +187,87 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  //seed rand
+  srand(42);
+  //enable spi
+  SPI1->CR1 |= SPI_CR1_SPE; 
+  //delay for 1 second
+  HAL_Delay(1000);
   clearLedArray();
-  // skSetLed(15,31,255,0,0);
-  // skSetLed(1,31,0,255,0);
-  // skSetLed(20,31,0,0,255);
-  // skUpdateLed();
+  skSetLed(0,10,255,0,0);
+  skSetLed(1,10,0,0x42,0);
+  skSetLed(2,10,0,0,0x66);
+  skUpdateLed();
   
-  spiSend(0x42);
-  spiSend(0x43);
-  spiSend(0x44);
-  spiSend(0x45);
-  spiSend(0x46);
+ 
   uint8_t num = 0;
-  while (1)
-  {
-    //toggle PC13
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-    CL_printMsg("Hello World\r\n");
+  // Initialize LED position
+      // Initialize LED position and movement direction
+    int ledPos = 0;
+    int bounceCount = 0;
+    int bounceDistance = LED_COUNT / 4;  // Set initial bounce distance to a quarter of the strip length
+    int direction = 1;
+    fillLEDs(2200);
+    while (1)
+    {
+      CL_printMsg("Hello World %d \r\n",num);
+        //toggle PC13
+        // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        // //move led along the strip, with easing effect towards the end
+        // clearLedArray();
+        // skSetLed(ledPos, 10, 0, 255, 0);  // You can choose any color here
+        // skUpdateLed();
+        // HAL_Delay(1 + (ledPos * ledPos) / (10*LED_COUNT));  // delay longer as we get closer to the end
+        
+        // // Increment or decrement LED position depending on direction
+        // ledPos += direction;
+        // if (ledPos >= LED_COUNT) {  // If we have reached the end of the strip...
+        //     ledPos = LED_COUNT - 1;  // ...stay at the end,
+        //     direction = -1;  // ...and reverse direction for bounce
+        //     bounceCount++;
+        // }
+        // else if (ledPos <= LED_COUNT - 1 - bounceDistance && direction == -1) {  // If we have reached the bounce point...
+        //     direction = 1;  // ...reverse direction for bounce
+        //     bounceDistance /= 2;  // Halve the bounce distance for next time
+        // }
 
-    //delay
-    HAL_Delay(100);
-    /* USER CODE END WHILE */
+        // if (bounceCount > 3) {  // If we have bounced enough times...
+        //     break;  // ...exit the loop
+        // }
+    }
+}
+void bounceLED(void)
+{
+    // Initialize LED position and movement direction
+    int ledPos = 0;
+    int direction = 1;
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+    while (1)
+    {
+        //toggle PC13
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        //move led along the strip, with easing effect towards the end
+        clearLedArray();
+        skSetLed(ledPos, 10, 0, 255, 0);  // You can choose any color here
+        skUpdateLed();
+        HAL_Delay(10 + (ledPos * ledPos) / (LED_COUNT));  // delay longer as we get closer to the end
+        
+        // Increment or decrement LED position depending on direction
+        ledPos += direction;
+        if (ledPos >= LED_COUNT) {  // If we have reached the end of the strip...
+            ledPos = LED_COUNT - 2;  // ...move one step back,
+            direction = -1;  // ...and reverse direction
+        }
+        else if (ledPos < 0) {  // If we have reached the start of the strip...
+            ledPos = 1;  // ...move one step forward,
+            direction = 1;  // ...and reverse direction
+        }
+    }
 }
 
 /**

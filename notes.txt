@@ -1,0 +1,9 @@
+openocd -f $openocdScripts/interface/stlink-v2.cfg -f $openocdScripts/target/stm32f1x.cfg -s $openocdScripts^C
+
+
+
+
+
+eddie@DeusXMachina:~$ echo $openocdScripts
+/usr/share/openocd/scripts/
+eddie@DeusXMachina:~$ 
