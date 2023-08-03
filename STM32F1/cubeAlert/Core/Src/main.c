@@ -84,6 +84,7 @@ void CL_printMsg(char *msg, ...)
 
 void spiSend(uint8_t data)
 {
+  
   SPI1->DR = data;
   while (!(SPI1->SR & SPI_SR_TXE));
 }
@@ -92,7 +93,7 @@ void clearLedArray(void)
 {
   for (int i = 0; i < LED_COUNT; i++)
   {
-    LED_ARRAY[i][GLOBAL] = 0;
+    LED_ARRAY[i][GLOBAL] = 0xE0;
     LED_ARRAY[i][RED] = 0;
     LED_ARRAY[i][GREEN] = 0;
     LED_ARRAY[i][BLUE] = 0;
@@ -105,6 +106,29 @@ void skSetLed(uint8_t ledNum, uint8_t global, uint8_t r, uint8_t g , uint8_t b)
   LED_ARRAY[ledNum][RED] = r;
   LED_ARRAY[ledNum][GREEN] = g;
   LED_ARRAY[ledNum][BLUE] = b;
+}
+
+void skUpdateLed(void)
+{
+  //send start of frame
+  for(int i = 0 ; i < 4;i++)
+  {
+    spiSend(0x00);
+  }
+  //send led frames
+  for(int i = 0 ; i < LED_COUNT;i++)
+  {
+    spiSend(LED_ARRAY[i][GLOBAL]);
+    spiSend(LED_ARRAY[i][BLUE]);
+    spiSend(LED_ARRAY[i][GREEN]);
+    spiSend(LED_ARRAY[i][RED]);
+  }
+
+  //send end of frame
+  for(int i = 0 ; i < 4;i++)
+  {
+    spiSend(0xFF);
+  }
 }
 /* USER CODE END 0 */
 
@@ -144,11 +168,24 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  clearLedArray();
+  // skSetLed(15,31,255,0,0);
+  // skSetLed(1,31,0,255,0);
+  // skSetLed(20,31,0,0,255);
+  // skUpdateLed();
+  
+  spiSend(0x42);
+  spiSend(0x43);
+  spiSend(0x44);
+  spiSend(0x45);
+  spiSend(0x46);
+  uint8_t num = 0;
   while (1)
   {
     //toggle PC13
     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
     CL_printMsg("Hello World\r\n");
+
     //delay
     HAL_Delay(100);
     /* USER CODE END WHILE */
