@@ -196,6 +196,8 @@ int initSpi(void)
     spi_pins.ss0   = FALSE;
     spi_pins.ss1   = TRUE;
     spi_pins.ss2   = FALSE;
+    spi_pins.vddioh = TRUE;
+    
     // Configure the peripheral
     retVal = MXC_SPI_Init(SPI, 1, 0, 1, 0, SPI_SPEED, spi_pins);
     if (retVal != E_NO_ERROR) {
