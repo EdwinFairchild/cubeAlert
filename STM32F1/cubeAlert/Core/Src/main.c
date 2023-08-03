@@ -134,6 +134,8 @@ void skUpdateLed(void)
 }
 void fillLEDs(int value)
 {
+    static int lastValue = 0;  // This variable will hold the last value between calls
+
     // Map the value from the range 10-2200 to the range 0-143
     int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
 
@@ -141,18 +143,53 @@ void fillLEDs(int value)
     if (ledsToLight < 0) ledsToLight = 0;
     if (ledsToLight > LED_COUNT - 1) ledsToLight = LED_COUNT - 1;
 
-    // Clear all LEDs
-    clearLedArray();
-
-    // Light up the LEDs from 0 to ledsToLight
-    for (int i = 0; i <= ledsToLight; i++)
+    if (ledsToLight < lastValue)  // The new value is smaller, so turn off LEDs from the end
     {
-        skSetLed(i, 1, 0, 255, 0);  // You can choose any color here
+        for (int i = lastValue-1; i > ledsToLight; i--)
+        {
+            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+            skUpdateLed();
+            HAL_Delay(10);  // Delay to create an animation effect
+        }
+
+        for (int i = lastValue; i >= ledsToLight; i--)
+        {
+            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+            skSetLed(i - 1, 1, 0, 255, 0);  // Set the LED just behind the green one to blue
+            skUpdateLed();
+            HAL_Delay(5);  // Delay to create an animation effect
+        }
+        if (ledsToLight > 0) {
+            skSetLed(ledsToLight - 1, 1, 0, 0, 255);  // Set the LED just behind the green one to blue
+            skUpdateLed();
+        }
     }
 
-    // Update the LEDs
-    skUpdateLed();
+    if (ledsToLight > lastValue)  // The new value is larger, so light up additional LEDs
+    {
+        for (int i = lastValue + 1; i <= ledsToLight; i++)
+        {
+            skSetLed(i - 1, 1, 0, 0, 255);  // Trailing color (blue in this case)
+            skSetLed(i, 1, 0, 255, 0);  // Primary color (green in this case)
+            skUpdateLed();
+            HAL_Delay(5);  // Delay to create an animation effect
+        }
+    }
+
+    // Remember the new value for the next time the function is called
+    lastValue = ledsToLight;
 }
+
+
+
+
+
+
+
+
+
+
+
 /* USER CODE END 0 */
 
 /**
@@ -199,10 +236,10 @@ int main(void)
   //delay for 1 second
   HAL_Delay(1000);
   clearLedArray();
-  skSetLed(0,10,255,0,0);
-  skSetLed(1,10,0,0x42,0);
-  skSetLed(2,10,0,0,0x66);
-  skUpdateLed();
+  // skSetLed(0,10,255,0,0);
+  // skSetLed(1,10,0,0x42,0);
+  // skSetLed(2,10,0,0,0x66);
+  // skUpdateLed();
   
  
   uint8_t num = 0;
@@ -213,32 +250,35 @@ int main(void)
     int bounceDistance = LED_COUNT / 4;  // Set initial bounce distance to a quarter of the strip length
     int direction = 1;
     fillLEDs(2200);
+    HAL_Delay(300);
+    fillLEDs(1500);
+    HAL_Delay(300);
+    fillLEDs(800);
+    HAL_Delay(300);
+
+    fillLEDs(1000);
+    HAL_Delay(300);
+
+    fillLEDs(40);
+    HAL_Delay(300);
+
+    fillLEDs(900);
     while (1)
     {
-      CL_printMsg("Hello World %d \r\n",num);
-        //toggle PC13
-        // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-        // //move led along the strip, with easing effect towards the end
-        // clearLedArray();
-        // skSetLed(ledPos, 10, 0, 255, 0);  // You can choose any color here
-        // skUpdateLed();
-        // HAL_Delay(1 + (ledPos * ledPos) / (10*LED_COUNT));  // delay longer as we get closer to the end
-        
-        // // Increment or decrement LED position depending on direction
-        // ledPos += direction;
-        // if (ledPos >= LED_COUNT) {  // If we have reached the end of the strip...
-        //     ledPos = LED_COUNT - 1;  // ...stay at the end,
-        //     direction = -1;  // ...and reverse direction for bounce
-        //     bounceCount++;
-        // }
-        // else if (ledPos <= LED_COUNT - 1 - bounceDistance && direction == -1) {  // If we have reached the bounce point...
-        //     direction = 1;  // ...reverse direction for bounce
-        //     bounceDistance /= 2;  // Halve the bounce distance for next time
-        // }
+      fillLEDs(2200);
+    HAL_Delay(300);
+    fillLEDs(1500);
+    HAL_Delay(300);
+    fillLEDs(800);
+    HAL_Delay(300);
 
-        // if (bounceCount > 3) {  // If we have bounced enough times...
-        //     break;  // ...exit the loop
-        // }
+    fillLEDs(1000);
+    HAL_Delay(300);
+
+    fillLEDs(40);
+    HAL_Delay(300);
+
+    fillLEDs(900);
     }
 }
 void bounceLED(void)
