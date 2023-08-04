@@ -30,4 +30,8 @@ void clearLedArray(void);
 void skUpdateLed(void);
 void spiSend(uint8_t data);
 void fillLEDs(int value);
+void disableUart(void);
+void enableUart(void);
+void UART3_Handler(void);
+void skSetUnmappedLed(uint16_t rangeSensorValue);
 #endif 

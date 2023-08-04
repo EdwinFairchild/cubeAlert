@@ -3,7 +3,7 @@
 /************| FreeRTOS STUFF |***************/
 TaskHandle_t rangeSensorTask_id;
 TaskHandle_t ledStripTask_id;
-
+SemaphoreHandle_t xSemaphore = NULL;
 /************| UART STUFF |***************/
 #define RANGE_SENSOR_UART_BAUD 9600
 volatile int READ_FLAG;
@@ -70,39 +70,35 @@ void rangeSensorTask(void *pvParameters)
     while(1)
     {
        
-        error = MXC_UART_TransactionAsync(&read_req);
+       // Wait for the semaphore to be given back by Task B
+       // xSemaphoreTake(xSemaphore, portMAX_DELAY);
+
+        enableUart();
+        error = MXC_UART_Transaction(&read_req);
         if(error != E_NO_ERROR)
         {
             APP_TRACE_INFO1("-->Error with UART_ReadAsync; %d\n", error);
         }
-        while (READ_FLAG){
-            // measurement_mm to a random number between 0 and 2200
-            measurement_mm = rand() % 2200;
-            // FreeRTOS delay 500ms
-            vTaskDelay(pdMS_TO_TICKS(50));
+        // while (READ_FLAG){
 
-
-        }; 
+        // }; 
         
-        if (READ_FLAG != E_NO_ERROR) {
-            APP_TRACE_INFO1("-->Error with UART_ReadAsync callback; %d\n", READ_FLAG);
-        }
-        else
-        {
-            // check and update the times we encounter 'm' as RxData
-            if (RxData[0] == 'm')
+
+            if (RxData[0] == '\n')
             {
-                mCount++;
-                if (mCount == 2)
-                {
-                    // we have a full measurement
+                // mCount++;
+                // if (mCount == 2)
+                // {
+                //     // we have a full measurement
                     mCount = 0;
-                    indexLocation++;
+                    indexLocation-2;
                     measurment[indexLocation] = '\0';
                     measurement_mm = atoi((const char*)measurment);
                     APP_TRACE_INFO1("%u", measurement_mm);
                     indexLocation = 0;
-                }
+                    disableUart();
+                    xSemaphoreGive(xSemaphore);
+                //}
             }else{
                     // we have a partial measurement
                     measurment[indexLocation] = RxData[0];
@@ -111,8 +107,20 @@ void rangeSensorTask(void *pvParameters)
                 }
 
             READ_FLAG=1;
-        }
+        
     }
+}
+void disableUart(void)
+{
+    NVIC_ClearPendingIRQ(UART3_IRQn);
+    NVIC_DisableIRQ(UART3_IRQn);
+
+}
+void enableUart(void)
+{
+    NVIC_ClearPendingIRQ(UART3_IRQn);
+    MXC_NVIC_SetVector(UART3_IRQn, UART3_Handler);
+    NVIC_EnableIRQ(UART3_IRQn);  
 }
 /***************************************************************/
 void ledStripTask(void *pvParameters)
@@ -122,16 +130,28 @@ void ledStripTask(void *pvParameters)
     led_color_t color = {31, 255, 0, 0};
     while(1)
     {
+         // Wait for the semaphore to be given back by Task B
+        xSemaphoreTake(xSemaphore, portMAX_DELAY);
+         __asm volatile("cpsid i");
        if(measurement_mm != prevMeasurement)
        {
+           
            prevMeasurement = measurement_mm;
-           fillLEDs(measurement_mm);
+           skSetUnmappedLed(measurement_mm);
+           skUpdateLed();
+           //fillLEDs(measurement_mm);
        }
+         // Give the semaphore back to signal Task A to run
+        xSemaphoreGive(xSemaphore);
+        __asm volatile("cpsie i");
     }
 }
 /***************************************************************/
 void registerUserAppTasks(void)
 {
+    // Create the binary semaphore
+    xSemaphore = xSemaphoreCreateBinary();
+    xSemaphoreGive(xSemaphore);
     APP_TRACE_INFO0(">>> Registering user application tasks...");
     xTaskCreate(rangeSensorTask, "Range Sensor Task", 256, NULL, 1, &rangeSensorTask_id);
     xTaskCreate(ledStripTask, "LED Strip Task", 256, NULL, 1, &ledStripTask_id);
@@ -276,7 +296,7 @@ void skSetLed(uint8_t ledNum, uint8_t global, uint8_t r, uint8_t g , uint8_t b)
 
 void skUpdateLed(void)
 {
-    __asm volatile("cpsid i");
+ //   __asm volatile("cpsid i");
   //send start of frame
   for(int i = 0 ; i < 4;i++)
   {
@@ -297,8 +317,22 @@ void skUpdateLed(void)
     spiSend(0xFF);
   }
 
-  __asm volatile("cpsie i");
+ // __asm volatile("cpsie i");
 }
+
+void skSetUnmappedLed(uint16_t rangeSensorValue)
+{
+    static int lastValue = 0;  // This variable will hold the last value between calls
+
+    int ledsToLight = (LED_COUNT - 1) - ((rangeSensorValue * (LED_COUNT - 1)) / 2000);
+    APP_TRACE_INFO1("Setting led: %d", ledsToLight);
+    //turn old one off
+    skSetLed(lastValue,0,0,0,0);
+    //turn new one on
+    skSetLed(ledsToLight,31,0,0,255);
+    lastValue = ledsToLight;
+}
+
 void fillLEDs(int value)
 {
     __asm volatile("cpsid i");
@@ -308,8 +342,8 @@ void fillLEDs(int value)
     uint8_t trailBrightness = 1;
     uint8_t tipBrightness = 10;
     // Map the value from the range 10-2200 to the range 0-143
-    int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
-
+    //int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
+    int ledsToLight = (LED_COUNT - 1) - ((value * (LED_COUNT - 1)) / 2200);
     // Ensure that ledsToLight is within the range 0-143
     if (ledsToLight < 0) ledsToLight = 0;
     if (ledsToLight > LED_COUNT - 1) ledsToLight = LED_COUNT - 1;
@@ -319,22 +353,23 @@ void fillLEDs(int value)
         // turns off all leds one by one that are greater than the new value
         for (int i = lastValue-1; i > ledsToLight; i--)
         {
-            skSetLed(i, trailBrightness, 50, 0, 0);  // Turn off the LED
+            // if you want a trailing color set that instead of 0,0,0,
+            skSetLed(i, trailBrightness, 0, 0, 0);  // Turn off the LED
             skUpdateLed();
             //MXC_Delay(delayUs);  // Delay to create an animation effect
         }
-        //makes the top led marker drops down to the new value
-        for (int i = lastValue; i >= ledsToLight; i--)
-        {
-            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
-            skSetLed(i - 1,tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
-            skUpdateLed();
-           // MXC_Delay(delayUs);  // Delay to create an animation effect
-        }
+        // //makes the top led marker drops down to the new value
+        // for (int i = lastValue; i >= ledsToLight; i--)
+        // {
+        //     skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+        //     skSetLed(i - 1,tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
+        //     skUpdateLed();
+        //    // MXC_Delay(delayUs);  // Delay to create an animation effect
+        // }
         if (ledsToLight > 0) {
-            skSetLed(ledsToLight - 1, onBrightness, 0, 0, 255);  // Set the LED just behind the green one to blue
+            skSetLed(ledsToLight , onBrightness, 0, 0, 255);  // Set the LED just behind the green one to blue
             // set tip marker
-            skSetLed(ledsToLight , tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
+           // skSetLed(ledsToLight , tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
             skUpdateLed();
         }
     }
@@ -345,9 +380,9 @@ void fillLEDs(int value)
         {
             skSetLed(i - 1, onBrightness, 0, 0, 255);  // Trailing color (blue in this case)
             //set tip led
-            skSetLed(i, tipBrightness, 255, 255, 0);  // Primary color (green in this case)
+          //  skSetLed(i, tipBrightness, 255, 255, 0);  // Primary color (green in this case)
             skUpdateLed();
-            MXC_Delay(5);  // Delay to create an animation effect
+          //  MXC_Delay(5);  // Delay to create an animation effect
         }
     }
 
@@ -355,3 +390,4 @@ void fillLEDs(int value)
     lastValue = ledsToLight;
      __asm volatile("cpsie i");
 }
+
