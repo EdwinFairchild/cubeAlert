@@ -79,7 +79,7 @@ void rangeSensorTask(void *pvParameters)
             // measurement_mm to a random number between 0 and 2200
             measurement_mm = rand() % 2200;
             // FreeRTOS delay 500ms
-            vTaskDelay(pdMS_TO_TICKS(500));
+            vTaskDelay(pdMS_TO_TICKS(50));
 
 
         }; 
@@ -304,6 +304,9 @@ void fillLEDs(int value)
     __asm volatile("cpsid i");
     static int lastValue = 0;  // This variable will hold the last value between calls
     uint8_t delayUs = 1;
+    uint8_t onBrightness = 1;
+    uint8_t trailBrightness = 1;
+    uint8_t tipBrightness = 10;
     // Map the value from the range 10-2200 to the range 0-143
     int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
 
@@ -313,22 +316,25 @@ void fillLEDs(int value)
 
     if (ledsToLight < lastValue)  // The new value is smaller, so turn off LEDs from the end
     {
+        // turns off all leds one by one that are greater than the new value
         for (int i = lastValue-1; i > ledsToLight; i--)
         {
-            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+            skSetLed(i, trailBrightness, 50, 0, 0);  // Turn off the LED
             skUpdateLed();
             //MXC_Delay(delayUs);  // Delay to create an animation effect
         }
-
+        //makes the top led marker drops down to the new value
         for (int i = lastValue; i >= ledsToLight; i--)
         {
             skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
-            skSetLed(i - 1, 1, 0, 255, 0);  // Set the LED just behind the green one to blue
+            skSetLed(i - 1,tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
             skUpdateLed();
            // MXC_Delay(delayUs);  // Delay to create an animation effect
         }
         if (ledsToLight > 0) {
-            skSetLed(ledsToLight - 1, 1, 0, 0, 255);  // Set the LED just behind the green one to blue
+            skSetLed(ledsToLight - 1, onBrightness, 0, 0, 255);  // Set the LED just behind the green one to blue
+            // set tip marker
+            skSetLed(ledsToLight , tipBrightness, 255, 255, 0);  // Set the LED just behind the green one to blue
             skUpdateLed();
         }
     }
@@ -337,8 +343,9 @@ void fillLEDs(int value)
     {
         for (int i = lastValue + 1; i <= ledsToLight; i++)
         {
-            skSetLed(i - 1, 1, 0, 0, 255);  // Trailing color (blue in this case)
-            skSetLed(i, 1, 0, 255, 0);  // Primary color (green in this case)
+            skSetLed(i - 1, onBrightness, 0, 0, 255);  // Trailing color (blue in this case)
+            //set tip led
+            skSetLed(i, tipBrightness, 255, 255, 0);  // Primary color (green in this case)
             skUpdateLed();
             MXC_Delay(5);  // Delay to create an animation effect
         }
