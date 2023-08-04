@@ -21,7 +21,7 @@ volatile uint32_t delaytVar = 0;
 #define DATA_LEN 4 // Words
 #define DATA_VALUE 0xA5A5 // This is for master mode only...
 #define VALUE 0xFFFF
-#define SPI_SPEED 100000 // Bit Rate
+#define SPI_SPEED 10000000 // Bit Rate
 volatile mxc_spi_req_t req;
 mxc_spi_pins_t spi_pins;
 volatile int SPI_FLAG;
@@ -65,6 +65,8 @@ void rangeSensorTask(void *pvParameters)
     memset(measurment, 0x0, 10);
     uint8_t indexLocation = 0;    
     int error;
+    //seed random number generator
+    srand(42);
     while(1)
     {
        
@@ -73,7 +75,14 @@ void rangeSensorTask(void *pvParameters)
         {
             APP_TRACE_INFO1("-->Error with UART_ReadAsync; %d\n", error);
         }
-        while (READ_FLAG){}; 
+        while (READ_FLAG){
+            // measurement_mm to a random number between 0 and 2200
+            measurement_mm = rand() % 2200;
+            // FreeRTOS delay 500ms
+            vTaskDelay(pdMS_TO_TICKS(500));
+
+
+        }; 
         
         if (READ_FLAG != E_NO_ERROR) {
             APP_TRACE_INFO1("-->Error with UART_ReadAsync callback; %d\n", READ_FLAG);
@@ -109,18 +118,15 @@ void rangeSensorTask(void *pvParameters)
 void ledStripTask(void *pvParameters)
 {
     clearLedArray();
-    skSetLed(0,10,255,0,0);
-    skSetLed(1,10,0,0x42,0);
-    skSetLed(2,10,0,0,0x66);
-    skUpdateLed();
+    uint16_t prevMeasurement = 0;
     led_color_t color = {31, 255, 0, 0};
     while(1)
     {
-        vTaskDelay(1000);
-        skUpdateLed();
-     //  spiSendLedStripFrame();
-       //sk9822_set_color_all(color);
-        APP_TRACE_INFO0("LED Strip Task");
+       if(measurement_mm != prevMeasurement)
+       {
+           prevMeasurement = measurement_mm;
+           fillLEDs(measurement_mm);
+       }
     }
 }
 /***************************************************************/
@@ -236,61 +242,7 @@ int initSpi(void)
     return E_NO_ERROR;
 }
 /***************************************************************/
-void spiSendLedStripFrame(void)
-{
-    
-    APP_TRACE_INFO0("Sending LED Strip Frame");
-    uint32_t ledStripFrame[COMPLETE_LED_FRAME_SIZE_U32];
-    memset(ledStripFrame, 0x0, NUM_OF_LEDS);
-    ledStripFrame[0] = START_OF_FRAME;
-    for (int i = 1; i <= NUM_OF_LEDS; i++)
-    {
-        ledStripFrame[i] = LED_FRAME(0x07,0x42,0x43,0x44);
-    }
-    //file end of frame num of words with 0x00000000
-   // for(int i = 1 ; i <= END_OF_FRAME_WORDS; i++)
-    //{
-        ledStripFrame[NUM_OF_LEDS + 1] = END_OF_FRAME;
-    //}
 
-    // send LED strip data frame as a huge stream
-    // req.txData = (uint8_t*)ledStripFrame;
-    // req.txLen = COMPLETE_LED_FRAME_SIZE_U32  * 4  ;
-    // req.rxLen = 0;
-
-    // MXC_SPI_MasterTransactionAsync(&req);
-
-    // while (SPI_FLAG == 1) {}
-    // APP_TRACE_INFO0("LED Strip Frame Sent\r\n-------");
-    // SPI_FLAG = 1;
-
-    // send byte by byte
-    volatile uint8_t *data = (uint8_t*)ledStripFrame;
-    uint8_t test = 0x42;
-    int retVal = 0;
-    __asm volatile("cpsid i");
-    for (int i = 0; i < COMPLETE_LED_FRAME_SIZE_U32 * 4; i++)
-    {
-        req.txData = (uint8_t*)&data[i];
-        req.txLen = 1;
-        req.txCnt = 0;
-        req.rxLen = 0;
-        retVal = MXC_SPI_MasterTransaction(&req);
-        if(retVal != E_NO_ERROR)
-        {
-            APP_TRACE_INFO1(">>>>>>>>>>>>SPI ERROR: %d", retVal);
-        }
-        // while (SPI_FLAG == 1) {}
-        // SPI_FLAG = 1;
-        //print what was sent
-       // APP_TRACE_INFO2("Sent: [%d]:[%x]",i, data[i]);
-       //for(delaytVar = 0; delaytVar < 500; delaytVar++){};
-        
-    }
-    __asm volatile("cpsie i");
-    APP_TRACE_INFO0("LED Strip Frame Sent\r\n-------");
-
-}
 
 void spiSend(uint8_t data)
 {
@@ -346,4 +298,53 @@ void skUpdateLed(void)
   }
 
   __asm volatile("cpsie i");
+}
+void fillLEDs(int value)
+{
+    __asm volatile("cpsid i");
+    static int lastValue = 0;  // This variable will hold the last value between calls
+    uint8_t delayUs = 1;
+    // Map the value from the range 10-2200 to the range 0-143
+    int ledsToLight = ((value - 10) * (LED_COUNT - 1)) / (2200 - 10);
+
+    // Ensure that ledsToLight is within the range 0-143
+    if (ledsToLight < 0) ledsToLight = 0;
+    if (ledsToLight > LED_COUNT - 1) ledsToLight = LED_COUNT - 1;
+
+    if (ledsToLight < lastValue)  // The new value is smaller, so turn off LEDs from the end
+    {
+        for (int i = lastValue-1; i > ledsToLight; i--)
+        {
+            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+            skUpdateLed();
+            //MXC_Delay(delayUs);  // Delay to create an animation effect
+        }
+
+        for (int i = lastValue; i >= ledsToLight; i--)
+        {
+            skSetLed(i, 0, 0, 0, 0);  // Turn off the LED
+            skSetLed(i - 1, 1, 0, 255, 0);  // Set the LED just behind the green one to blue
+            skUpdateLed();
+           // MXC_Delay(delayUs);  // Delay to create an animation effect
+        }
+        if (ledsToLight > 0) {
+            skSetLed(ledsToLight - 1, 1, 0, 0, 255);  // Set the LED just behind the green one to blue
+            skUpdateLed();
+        }
+    }
+
+    if (ledsToLight > lastValue)  // The new value is larger, so light up additional LEDs
+    {
+        for (int i = lastValue + 1; i <= ledsToLight; i++)
+        {
+            skSetLed(i - 1, 1, 0, 0, 255);  // Trailing color (blue in this case)
+            skSetLed(i, 1, 0, 255, 0);  // Primary color (green in this case)
+            skUpdateLed();
+            MXC_Delay(5);  // Delay to create an animation effect
+        }
+    }
+
+    // Remember the new value for the next time the function is called
+    lastValue = ledsToLight;
+     __asm volatile("cpsie i");
 }

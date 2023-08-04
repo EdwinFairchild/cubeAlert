@@ -18,6 +18,7 @@
 #include "uart.h"
 #include "spi.h"
 #include "sk9822.h"
+#include "mxc_delay.h"
 void registerUserAppTasks(void);
 int initSpi(void);
 int initUART(void);
@@ -28,4 +29,5 @@ void skSetLed(uint8_t ledNum, uint8_t global, uint8_t r, uint8_t g , uint8_t b);
 void clearLedArray(void);
 void skUpdateLed(void);
 void spiSend(uint8_t data);
+void fillLEDs(int value);
 #endif 
